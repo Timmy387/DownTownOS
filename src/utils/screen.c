@@ -50,7 +50,10 @@ void scroll(int rows){
 char * saveScreen(){
     char * screenBuff = (char*)malloc(ROWS * COLS + 1);
     char * screen = getScreen();
-    strcpy(screenBuff, screen);
+    int i;
+    for (i = 0; i < ROWS * COLS; i++){
+        screenBuff[i] = screen[i];
+    }
     return screenBuff;
 }
 
@@ -64,29 +67,6 @@ void loadScreen(char * screenBuff){
     printScreen();
     free(screenBuff);
 }
-
-
-short * saveScreen1(){
-    short * screenBuff = (short*)malloc(80 * 25 * 2);
-    readInScreen(screenBuff);
-    return screenBuff;
-}
-
-
-void loadScreen1(short * screenBuff){
-    int i;
-    short w;
-    char ch;
-    char color;
-    for (i = 0; i < 80 * 25; i++){
-        w = screenBuff[i];
-        ch = w & 0xFF;
-        color = (w >> 8) & 0xFF;
-        putChar(ch, i / 80, mod(i, 80), color);
-    }
-    free(screenBuff);
-}
-
 
 
 char * getScreen(){
@@ -113,9 +93,10 @@ void printScreen(){
     configFile * config = getConfig();
     int i;
     char ch;
-    for (i = 0; i < 80 * 25; i++){
+    for (i = 0; i < ROWS * COLS; i++){
         ch = screenBuff[i];
         if (ch != '\n') putChar(ch, i / 80, mod(i, 80), config->color);
+        else putChar(0, i / 80, mod(i, 80), config->color);
     }
 }
 

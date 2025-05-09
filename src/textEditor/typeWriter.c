@@ -6,9 +6,9 @@
 int typeWriter(char * filename){
     char * contents;
     char * screenBuff = saveScreen();
+    char * screen = getScreen();
     screenData * sd = getScreenData();
     int currow = sd->row;
-    String * file;
     int i;
     char c;
     if (!fileExist(filename)) {
@@ -20,20 +20,19 @@ int typeWriter(char * filename){
         loadScreen(screenBuff);
         return 2;
     }
-    file = newString(contents);
-    free(contents);
-    file->s[SCREENSIZE] = 0;
-    // printLiteral("Press ESC to quit");
     sd->row = 0;
     sd->col = 0;
     moveCursor(sd->row, sd->col);
-    print(file);
+    for (i = 0; i < SCREENSIZE; i++){
+        screen[i] = contents[i];
+    }
+    free(contents);
+    printScreen();
     sd->row = 0;
     sd->col = 0;
     moveCursor(sd->row, sd->col);
     typingLoop(filename);
     sd->row = currow;
-    freeString(file);
     loadScreen(screenBuff);
 }
 

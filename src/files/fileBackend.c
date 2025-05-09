@@ -280,7 +280,7 @@ char * readFileContents(char * filename){
     char * contents = (char*)malloc(4 * BLOCK_SIZE); // not dynamic, but can't be yet
     int i;
     for (i = 0; i < 4 * BLOCK_SIZE; i++){
-        contents[i] = ' ';
+        contents[i] = 0;
     }
     if (!fileExist(filename)){
         return 0;
@@ -330,14 +330,13 @@ void readHelper(inode * file, char * contents){
 int saveFile(char * filename, char * contents){
     inode * currDir = getCurrDir();
     inode * file;
-    int size = strLen(contents);
+    int size = strLen(contents); // contents isnt null terminated properly, on purpose though, so this doesnt work
     char * writeStr;
     int i;
     int j;
     int freeBlock;
     size = size / BLOCK_SIZE + 1;
-    writeStr = (char*)malloc(size * BLOCK_SIZE);
-    strcpy(writeStr, contents);
+    size = 4;
     if (!fileExist(filename)){
         return 0;
     }
