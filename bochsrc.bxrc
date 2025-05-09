@@ -1,0 +1,28 @@
+# Bochs Configuration File
+
+# memory
+megs: 16
+
+# CPU
+cpu: count=1, ips=1000000
+
+# Floppy drive
+floppya: 360k=disk0.img, status=inserted
+
+# BIOS and VGA BIOS
+romimage: file=BIOS-bochs-latest
+vgaromimage: file=VGABIOS-lgpl-latest.bin
+
+display_library: win32, options="gui_debug"
+
+boot: a
+log: bochslog.txt
+panic: action=ask
+error: action=report
+info: action=report
+debug: action=ignore
+
+mouse: enabled=0
+keyboard: type=mf
+
+magic_break: enabled=1
