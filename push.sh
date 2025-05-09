@@ -1,3 +1,4 @@
+git pull
 git add src/
 git add Makefile
 git add README.md
