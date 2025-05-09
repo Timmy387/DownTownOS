@@ -38,7 +38,7 @@ void scroll(int rows){
                 screenBuff[(row - 1) * COLS + col] = screenBuff[row * COLS + col];
             }
         }
-        for (col = 0; col < COLS; col++) screenBuff[(ROWS - 1) * COLS + col] = ' ';
+        for (col = 0; col < COLS; col++) screenBuff[(ROWS - 1) * COLS + col] = 0;
         sd->row--;
         rows--;
     }

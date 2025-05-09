@@ -55,12 +55,12 @@ int print(String * str){
                 sd->row--;
             }            
             sd->col--;
-            screenBuff[sd->row * COLS + sd->col] = ' ';
+            screenBuff[sd->row * COLS + sd->col] = 0;
         }
         else{
             if (sd->col == COLS || str->s[i] == '\n'){
                 if (str->s[i] == '\n'){
-                    for (j = sd->col; j < COLS; j++) screenBuff[sd->row * COLS + j] = ' ';
+                    for (j = sd->col; j < COLS; j++) screenBuff[sd->row * COLS + j] = 0;
                 }                
                 sd->col = 0;
                 sd->row++;
