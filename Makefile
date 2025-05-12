@@ -10,7 +10,6 @@ C_SRC = \
 			commands/handler.c 		\
 			files/fileBackend.c 	\
 			files/fileCmds.c		\
-            lists/arrayList.c 		\
             memory/malloc.c 		\
 			strings/pStr.c 			\
 			strings/string.c 		\

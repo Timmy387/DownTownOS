@@ -9,6 +9,12 @@ typedef struct {
     short col;
 }screenData;
 
+typedef struct {
+    char * vals;
+    short newlineloc;
+    short color;
+}rowData;
+
 void resetScreen();
 
 void scroll(int rows);

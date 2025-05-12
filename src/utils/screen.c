@@ -69,6 +69,28 @@ void loadScreen(char * screenBuff){
 }
 
 
+rowData ** getScreen1(){
+    static rowData ** screenBuff;
+    static short * fullScreen;
+    static short initialized = 0;
+    int i, j;
+    if (!initialized){
+        initialized = 1;
+        screenBuff = (rowData**)malloc(sizeof(rowData*) * ROWS);
+        for (i = 0; i < ROWS; i++){
+            screenBuff[i] = (rowData*)malloc(sizeof(rowData));
+            screenBuff[i]->vals = (char*)malloc(COLS);
+            screenBuff[i]->newlineloc = 0;
+            screenBuff[i]->color = 0x0F;
+            for (j = 0; j < COLS; j++){
+                screenBuff[i]->vals[j] = 0;
+            }
+        }
+    }
+    return screenBuff;
+}
+
+
 char * getScreen(){
     static char * screenBuff;
     static short * fullScreen;
@@ -79,11 +101,18 @@ char * getScreen(){
         screenBuff = (char*)malloc(ROWS * COLS + 1);
         fullScreen = (short*)malloc(ROWS * COLS * sizeof(short));
         readInScreen(fullScreen);
-        for (i = 0; i < ROWS * COLS; i++) screenBuff[i] = fullScreen[i] & 0xFF;
+        for (i = 0; i < ROWS * COLS; i++) screenBuff[i] = ' ';
         screenBuff[i] = 0;
         free(fullScreen);
     }
     return screenBuff;
+}
+
+
+void printScreen1(){
+    // rowData ** screenBuff = getScreen();
+    screenData * sd = getScreenData();
+
 }
 
 
