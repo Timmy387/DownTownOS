@@ -5,6 +5,8 @@
 
 int typeWriter(char * filename);
 
-void typingLoop();
+void typingLoop(char * filename);
+
+void printFile(ofile * file);
 
 #endif

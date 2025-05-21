@@ -5,84 +5,87 @@
 
 
 void resetScreen(){
-    int row;
-    int col;
-    unsigned short w;
-    char c;
-    char color;
-    unsigned short * screenBuff = (unsigned short*)malloc(ROWS * COLS * 2);
-    readInScreen(screenBuff);
-    for (row = 0; row < 25; row++){
-        for (col = 0; col < 80; col++) {
-            w = screenBuff[row * 80 + col];
-            c = w & 0xFF;
-            color = (w >> 8) & 0xFF;
-            if (c != ' '){
-                putChar(0, row, col, 0x0F);
-            }
-        }
+    int i;
+    rowData ** screen = getScreen();
+    screenData * sd = getScreenData();
+    for (i = 0; i < ROWS; i++){
+        freeRowData(screen[i]);
+        screen[i] = freshRow();
     }
-    hideCursor();
-    free(screenBuff);
+    sd->row = 0;
+    sd->col = 0;
+    moveCursor(0, 0);
 }
 
 
 void scroll(int rows){
-    int row;
-    int col;
-    char * screenBuff = getScreen();
+    int i, j;
+    rowData ** screen = getScreen();
     screenData * sd = getScreenData();
-    while (sd->row > 0 && rows > 0){
-        for (row = 1; row < ROWS; row++){
-            for (col = 0; col < COLS; col++){
-                screenBuff[(row - 1) * COLS + col] = screenBuff[row * COLS + col];
-            }
+    for (i = 0; i < rows; i++){
+        if (sd->row == 0) break;
+        freeRowData(screen[0]);
+        for (j = 1; j < ROWS; j++){
+            screen[j - 1] = screen[j];
         }
-        for (col = 0; col < COLS; col++) screenBuff[(ROWS - 1) * COLS + col] = 0;
+        screen[ROWS - 1] = freshRow();
         sd->row--;
-        rows--;
     }
     moveCursor(sd->row, sd->col);
     printScreen();
 }
 
 
-char * saveScreen(){
-    char * screenBuff = (char*)malloc(ROWS * COLS + 1);
-    char * screen = getScreen();
-    int i;
-    for (i = 0; i < ROWS * COLS; i++){
-        screenBuff[i] = screen[i];
+rowData ** saveScreen(){
+    rowData ** screen = getScreen();
+    rowData ** newScreen = (rowData**)malloc(sizeof(rowData*) * ROWS);
+    rowData * row;
+    rowData * newrow;
+    int i, j;
+    for (i = 0; i < ROWS; i++){
+        newrow = (rowData*)malloc(sizeof(rowData));
+        row = screen[i];
+        newScreen[i] = newrow;
+        newrow->color = row->color;
+        newrow->newlineloc = row->newlineloc;
+        newrow->vals = (char*)malloc(COLS + 1);
+        for (j = 0; j < COLS; j++) newrow->vals[j] = row->vals[j];
     }
-    return screenBuff;
+    return newScreen;
 }
 
 
-void loadScreen(char * screenBuff){
-    int i;
-    char * screen = getScreen();
-    for (i = 0; i < ROWS * COLS; i++){
-        screen[i] = screenBuff[i];
+void loadScreen(rowData ** screen){
+    rowData ** oldscreen = getScreen();
+    rowData * row;
+    rowData * oldrow;
+    int i, j;
+    for (i = 0; i < ROWS; i++){
+        row = screen[i];
+        oldrow = oldscreen[i];
+        oldrow->color = row->color;
+        oldrow->newlineloc = row->newlineloc;
+        for (j = 0; j < COLS; j++) oldrow->vals[j] = row->vals[j];
+        free(row->vals);
+        free(row);
     }
+    free(screen);
     printScreen();
-    free(screenBuff);
 }
 
 
-rowData ** getScreen1(){
+rowData ** getScreen(){
     static rowData ** screenBuff;
     static short * fullScreen;
     static short initialized = 0;
+    configFile * config = getConfig();
     int i, j;
     if (!initialized){
         initialized = 1;
         screenBuff = (rowData**)malloc(sizeof(rowData*) * ROWS);
         for (i = 0; i < ROWS; i++){
-            screenBuff[i] = (rowData*)malloc(sizeof(rowData));
-            screenBuff[i]->vals = (char*)malloc(COLS);
-            screenBuff[i]->newlineloc = 0;
-            screenBuff[i]->color = 0x0F;
-            for (j = 0; j < COLS; j++){
+            screenBuff[i] = freshRow();
+            for (j = 0; j < COLS + 1; j++){
                 screenBuff[i]->vals[j] = 0;
             }
         }
@@ -91,41 +94,19 @@ rowData ** getScreen1(){
 }
 
 
-char * getScreen(){
-    static char * screenBuff;
-    static short * fullScreen;
-    static short initialized = 0;
-    int i;
-    if (!initialized){
-        initialized = 1;
-        screenBuff = (char*)malloc(ROWS * COLS + 1);
-        fullScreen = (short*)malloc(ROWS * COLS * sizeof(short));
-        readInScreen(fullScreen);
-        for (i = 0; i < ROWS * COLS; i++) screenBuff[i] = ' ';
-        screenBuff[i] = 0;
-        free(fullScreen);
-    }
-    return screenBuff;
-}
-
-
-void printScreen1(){
-    // rowData ** screenBuff = getScreen();
-    screenData * sd = getScreenData();
-
-}
-
-
 void printScreen(){
-    char * screenBuff = getScreen();
+    rowData ** screen = getScreen();
     screenData * sd = getScreenData();
     configFile * config = getConfig();
+    rowData * row;
     int i;
+    int j;
     char ch;
-    for (i = 0; i < ROWS * COLS; i++){
-        ch = screenBuff[i];
-        if (ch != '\n') putChar(ch, i / 80, mod(i, 80), config->color);
-        else putChar(0, i / 80, mod(i, 80), config->color);
+    for (i = 0; i < ROWS; i++){
+        row = screen[i];
+        for (j = 0; j < COLS; j++){ // these should always stop at the same point I think?
+            putChar(row->vals[j], i, j, row->color);
+        }
     }
 }
 
@@ -142,4 +123,24 @@ screenData * getScreenData(){
         data->col = cursorPos & 0xFF;
     }
     return data;
+}
+
+
+rowData * freshRow(){
+    rowData * row = (rowData*)malloc(sizeof(rowData));
+    configFile * config = getConfig();
+    int i;
+    row->vals = (char*)malloc(COLS + 1);
+    row->newlineloc = 0;
+    row->color = config->color;
+    for (i = 0; i < COLS + 1; i++){
+        row->vals[i] = 0;
+    }
+    return row;
+}
+
+
+void freeRowData(rowData * row){
+    free(row->vals);
+    free(row);
 }

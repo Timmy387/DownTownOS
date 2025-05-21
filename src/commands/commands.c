@@ -143,6 +143,7 @@ void touchCmd(String ** arguments, int numOptions){
         printLiteral("Enter a filename to create");
         return;
     }
+    filename->s[MAX_NAME_LEN] = 0;
     errorNum = touch(filename->s);
     if (errorNum > 0){
         if (errorNum == 1){
@@ -193,6 +194,7 @@ void rmCmd(String ** arguments, int numOptions){
 void changeColor(String ** arguments, short numOptions){
     String * newColor;
     configFile * config = getConfig();
+    rowData ** screen = getScreen();
     short color;
     short bg = 0;
     int i = 1;
@@ -273,6 +275,9 @@ void changeColor(String ** arguments, short numOptions){
             printScreen();
             return;
         }
+    }
+    for (i = 0; i < ROWS; i++){
+        screen[i]->color = config->color;
     }
     saveConfig();
     printScreen();

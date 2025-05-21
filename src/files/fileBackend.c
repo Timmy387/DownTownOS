@@ -39,6 +39,7 @@ void initFileSystem(){
 void buildConfig(configFile * config){
     config->init = 1;
     config->color = 0x0F;
+    config->twTitleColor = 0x1D;
     writeToDisk(config, FILE_START_HEAD, FILE_START_TRACK, CONFIG_SECTOR);
 }
 
@@ -330,13 +331,12 @@ void readHelper(inode * file, char * contents){
 int saveFile(char * filename, char * contents){
     inode * currDir = getCurrDir();
     inode * file;
-    int size = strLen(contents); // contents isnt null terminated properly, on purpose though, so this doesnt work
+    int size = strLen(contents);
     char * writeStr;
     int i;
     int j;
     int freeBlock;
     size = size / BLOCK_SIZE + 1;
-    size = 4;
     if (!fileExist(filename)){
         return 0;
     }

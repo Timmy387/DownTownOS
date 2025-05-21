@@ -14,7 +14,7 @@ String * currentDir();
 
 void addChar(String * s, char c);
 
-int print(String * str);
+void print(String * str);
 
 int printChar(char c);
 

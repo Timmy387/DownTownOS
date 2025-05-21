@@ -13,6 +13,7 @@ C_SRC = \
             memory/malloc.c 		\
 			strings/pStr.c 			\
 			strings/string.c 		\
+			textEditor/openFile.c 	\
 			textEditor/typeWriter.c \
 			utils/screen.c 			\
 			utils/time.c 			\

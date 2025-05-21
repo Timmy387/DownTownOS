@@ -88,3 +88,13 @@ void toLower(char *s) {
         s++;
     }
 }
+
+
+int countChar(char * contents, char c){
+    int count = 0;
+    while (*contents){
+        if (*contents == c) count++;
+        contents++;
+    }
+    return count;
+}

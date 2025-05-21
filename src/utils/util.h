@@ -17,4 +17,6 @@ int htod(char * s);
 
 void toLower(char * s);
 
+int countChar(char * contents, char c);
+
 #endif

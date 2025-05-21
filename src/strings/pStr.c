@@ -99,7 +99,7 @@ void bounceAround(char * st, int speed){
     char key = 0;
     int i;
     int j;
-    char * screenBuff = saveScreen();
+    rowData ** screenBuff = saveScreen();
     // fullTime * startTime = getTime();
     // fullTime * endTime = getTime();
     resetScreen();
@@ -169,7 +169,7 @@ void hopAround(char * st, int speed){
     int i;
     int j;
     pStr * s = initStr(st, 10, 0, 0x0F);
-    char * screenBuff = saveScreen();
+    rowData ** screenBuff = saveScreen();
     resetScreen();
     putStr(s);
     while(1){

@@ -29,6 +29,7 @@ typedef struct {
     short init;
     short initFiles;
     short color;
+    short twTitleColor;
 } configFile;
 
 void initFileSystem();

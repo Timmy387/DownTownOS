@@ -19,11 +19,15 @@ void resetScreen();
 
 void scroll(int rows);
 
-char * saveScreen();
+rowData ** saveScreen();
 
-void loadScreen(char * screenBuff);
+void freeRowData(rowData * row);
 
-char * getScreen();
+rowData * freshRow();
+
+void loadScreen(rowData ** screenBuff);
+
+rowData ** getScreen();
 
 void printScreen();
 

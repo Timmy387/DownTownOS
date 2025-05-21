@@ -38,48 +38,44 @@ void addChar(String * s, char c){
 }
 
 
-int print(String * str){
+void print(String * str){
     screenData * sd = getScreenData();
-    char * screenBuff = getScreen();
-    short word;
-    int i;
-    int j;
+    rowData ** screen = getScreen();
+    rowData * row = screen[sd->row];
+    char c;
+    int i, j;
     for (i = 0; i < str->len; i++){
-        if (str->s[i] == 8){ // backspace
-            if (sd->col == 0 && sd->row == 0) {
-                // moveCursor(sd->row, sd->col);
-                continue;
-            }
+        c = str->s[i];
+        // backspace
+        if (c == 8){
             if (sd->col == 0){
-                sd->col = COLS;
+                if (sd->row == 0) continue;
+                row = screen[sd->row];
+                sd->col = row->newlineloc;
                 sd->row--;
-            }            
+            }
             sd->col--;
-            screenBuff[sd->row * COLS + sd->col] = 0;
+            row->newlineloc--;
+            row->vals[row->newlineloc] = 0;
         }
-        else{
-            if (sd->col == COLS || str->s[i] == '\n'){
-                if (str->s[i] == '\n'){
-                    for (j = sd->col; j < COLS; j++) screenBuff[sd->row * COLS + j] = 0;
-                }                
-                sd->col = 0;
+        else {
+            if (row->newlineloc == COLS || c == '\n'){
                 sd->row++;
+                sd->col = 0;
                 if (sd->row == ROWS){
                     scroll(1);
                 }
+                row = screen[sd->row];
             }
-            if (!(str->s[i] == '\n')) {
-                screenBuff[sd->row * COLS + sd->col] = str->s[i];
+            if (c != '\n'){
+                row->vals[row->newlineloc] = c;
+                row->vals[row->newlineloc + 1] = 0;
+                row->newlineloc++;
                 sd->col++;
             }
-
         }
-        if (sd->row >= ROWS){
-            sd->row = ROWS - 1;
-        }
-        moveCursor(sd->row, sd->col);
-
     }
+    moveCursor(sd->row, sd->col);
     printScreen();
 }
 
@@ -122,7 +118,7 @@ String ** split(String * str, char c){
     String * new;
     int inquotes = 0;
     char * input = str->s;
-    char tempStr[128];
+    char tempStr[48];
     String ** dest;
     int numStrs = 1;
     for (i = 0; i < str->len; i++){

@@ -13,6 +13,7 @@ void commandGetter(){
     short keyPress = 0;
     char ch = 0;
     char sc = 0;
+    short countsincespace = 0;
     String * command = newString("");
     String * prompt = newString("$ ");
     String * lastCommand = newString("");
@@ -55,8 +56,13 @@ void commandGetter(){
             print(command);
         }
         else {
-            if (ch != 8 || command->len) printChar(ch);
-            addChar(command, ch);
+            if (ch == ' ') countsincespace = 0;
+            else if (ch == 8 && countsincespace) countsincespace--;
+            else if (countsincespace < 32) countsincespace++;
+            if (countsincespace < 32){
+                if (ch != 8 || command->len) printChar(ch);
+                addChar(command, ch);
+            }
         }
         keyPress = 0;
     }
