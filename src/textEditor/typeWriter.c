@@ -13,8 +13,8 @@ int typeWriter(char * filename){
     rowData ** screen = getScreen();
     configFile * config = getConfig();
     screenData * sd = getScreenData();
-    char * twoptions = "  QUIT     SAVE  ";
-    char * shortcuts = " Ctrl+X   Ctrl+S ";
+    char * twoptions = "  QUIT     SAVE     We really need more options here, this";
+    char * shortcuts = " Ctrl+X   Ctrl+S    looks dumb af right now can't even lie";
     int currow = sd->row;
     int namelen = strLen(filename);
     int i, j;
@@ -95,7 +95,7 @@ void typingLoop(ofile * file){
         }
 
         else if (!ch && sc == 0x50){ // down arrow
-            if (sd->row < ROWS - 1){
+            if (sd->row < ROWS - file->numbotrows - 1 && sd->row < file->numrows + file->numtoprows - 1){
                 sd->row++;
                 row = screen[sd->row];
                 if (lastcol < row->newlineloc)sd->col = lastcol;
@@ -205,6 +205,8 @@ void backspaceHandler(ofile * file){
     int i;
     screenData * sd = getScreenData();
     rowData * row = file->rows[sd->row - file->numtoprows + file->startrow];
+    rowData ** newrows = (rowData**)malloc(sizeof(rowData*) * (file->numrows - 1));
+    int currow = sd->row - file->numtoprows + file->startrow;
     if (sd->col > 0){
         i = sd->col - 1;
         while (row->vals[i]){
@@ -214,10 +216,18 @@ void backspaceHandler(ofile * file){
         sd->col--;
         row->newlineloc--;
     }
-    else if (sd->row > file->numtoprows){
+    else if (sd->row > file->numtoprows){ // doesnt work!
         if (row->newlineloc == 0){
-            // freeRowData(row);
-
+            freeRowData(row);
+            for (i = 0; i < file->numrows - 1; i++){
+                if (i < currow - 1) newrows[i] = file->rows[i];
+                else newrows[i] = file->rows[i + 1];
+            }
+            free(file->rows);
+            file->rows = newrows;
+            file->numrows--;
+            sd->row--;
+            sd->col = file->rows[sd->row - file->numtoprows + file->startrow]->newlineloc;
         }
     }
 }
@@ -228,12 +238,12 @@ void enterHandler(ofile * file){
     screenData * sd = getScreenData();
     rowData * row = file->rows[sd->row - file->numtoprows + file->startrow];
     rowData ** newrows = (rowData**)malloc(sizeof(rowData*) * (file->numrows + 1));
-    int filerow = sd->row - file->numtoprows + file->startrow;
+    int currow = sd->row - file->numtoprows + file->startrow;
     for (i = 0; i < file->numrows; i++){
-        if (i < filerow){
+        if (i < currow){
             newrows[i] = file->rows[i];
         }
-        else if (i == filerow){
+        else if (i == currow){
             newrows[i] = file->rows[i];
             newrows[i + 1] = freshRow();
             for (j = sd->col; j < row->newlineloc; j++){

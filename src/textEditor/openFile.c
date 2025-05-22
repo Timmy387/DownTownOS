@@ -26,6 +26,7 @@ ofile * openFile(char * filename, int toprows, int botrows){ // num extra top an
         }
         contents += j;
         if (*contents == '\n') contents++;
+        row->newlineloc = j;
     }
     file->toprows = (rowData**)malloc(sizeof(rowData*) * file->numtoprows);
     file->botrows = (rowData**)malloc(sizeof(rowData*) * file->numbotrows);

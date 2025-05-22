@@ -14,7 +14,8 @@
 void typeWriterCmd(String ** arguments, int numOptions){
     String * filename = arguments[1];
     if (numOptions > 1 && strEqual(arguments[1]->s, "-h")){
-        printLiteral("typewriter/tw <filename>: edit file in our custom text editor!\n If file doesn't exist it will be created then opened.\n");
+        printLiteral("typewriter/tw <filename>: edit file in our custom text editor!\n If specified \
+file doesn't exist it will be created then opened.\n");
         return;
     }
     if (!fileExist(filename->s)) touch(filename->s);
@@ -296,7 +297,7 @@ void clear(String ** arguments, short numOptions){
 
 void help(String ** arguments, short numOptions){
     printLiteral("Command options include:\n  help(duh)\n  color\n  bounce\n  hop\n  clear (Ctrl+L)\n  reset (Ctrl+R)\n");
-    printLiteral("  mkdir\n  rm\n  ls\n  cd\n  pwd\n  touch\n  typewriter (tw)\n");
+    printLiteral("  mkdir\n  rm\n  ls\n  cd\n  pwd\n  touch\n  typewriter/tw\n");
     printLiteral(" And any others you add!\n Add the -h flag to a command to learn more about it.\n");
 }
 
