@@ -30,6 +30,7 @@ typedef struct {
     short initFiles;
     short color;
     short twTitleColor;
+    short twInstrColor;
 } configFile;
 
 void initFileSystem();

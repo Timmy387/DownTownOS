@@ -54,3 +54,27 @@ void freeFile(ofile * file){
     free(file->filename);
     free(file);
 }
+
+
+int saveOfile(ofile * file){
+    char * contents;
+    short i, j, count;
+    count = 0;
+    for (i = 0; i < file->numrows; i++){
+        count += file->rows[i]->newlineloc + 1;
+    }
+    contents = (char*)malloc(count + 1);
+    count = 0;
+    for (i = 0; i < file->numrows; i++){
+        j = 0;
+        while (file->rows[i]->vals[j]){
+            contents[count++] = file->rows[i]->vals[j];
+            j++;
+        }
+        contents[count++] = '\n';
+    }
+    contents[count] = 0;
+    saveFile(file->filename, contents);
+    free(contents);
+    return 0;
+}

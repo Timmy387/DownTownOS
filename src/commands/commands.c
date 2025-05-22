@@ -14,7 +14,7 @@
 void typeWriterCmd(String ** arguments, int numOptions){
     String * filename = arguments[1];
     if (numOptions > 1 && strEqual(arguments[1]->s, "-h")){
-        printLiteral("typewriter/tw <filename>: edit file in our custom text editor!\n");
+        printLiteral("typewriter/tw <filename>: edit file in our custom text editor!\n If file doesn't exist it will be created then opened.\n");
         return;
     }
     if (!fileExist(filename->s)) touch(filename->s);
@@ -136,11 +136,11 @@ void touchCmd(String ** arguments, int numOptions){
     String * filename = arguments[1];
     int errorNum;
     if (numOptions > 1 && strEqual(arguments[1]->s, "-h")){
-        printLiteral("touch <filename>: makes a file\n");
+        printLiteral("touch <filename>: creates an empty text file with the given name.\n");
         return;
     }
     if (!filename) {
-        printLiteral("Enter a filename to create");
+        printLiteral("Enter a filename to create\n");
         return;
     }
     filename->s[MAX_NAME_LEN] = 0;
@@ -296,7 +296,7 @@ void clear(String ** arguments, short numOptions){
 
 void help(String ** arguments, short numOptions){
     printLiteral("Command options include:\n  help(duh)\n  color\n  bounce\n  hop\n  clear (Ctrl+L)\n  reset (Ctrl+R)\n");
-    printLiteral("  mkdir\n  rm\n  ls\n  cd\n  pwd\n");
+    printLiteral("  mkdir\n  rm\n  ls\n  cd\n  pwd\n  touch\n  typewriter (tw)\n");
     printLiteral(" And any others you add!\n Add the -h flag to a command to learn more about it.\n");
 }
 

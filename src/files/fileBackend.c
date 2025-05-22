@@ -39,7 +39,8 @@ void initFileSystem(){
 void buildConfig(configFile * config){
     config->init = 1;
     config->color = 0x0F;
-    config->twTitleColor = 0x1D;
+    config->twTitleColor = 0x2E;
+    config->twInstrColor = 0x30;
     writeToDisk(config, FILE_START_HEAD, FILE_START_TRACK, CONFIG_SECTOR);
 }
 
