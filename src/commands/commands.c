@@ -24,42 +24,23 @@ file doesn't exist it will be created then opened.\n");
 }
 
 
-void bounce(String ** arguments, int numOptions){
-    char first;
-    char * arg;
-    if (numOptions > 1 && strEqual(arguments[1]->s, "-h")){
-        printLiteral("bounce <string> <speed>: makes given string bounce around screen\nat speed 1(slow), 2(medium), or 3(fast).\n");
-        printLiteral("Press ESC to return to terminal.\n");
-        return;
-    }
-    if (numOptions == 1) bounceAround("Hello, World!", 2);
-    if (numOptions == 2){
-        arg = arguments[1]->s;
-        first = arg[0];
-        if (first >= '0' && first <= '9') bounceAround("Hello, World!", atoi(arg));
-        else bounceAround(arg, 2);
-    }
-    if (numOptions > 2) bounceAround(arguments[1]->s, atoi(arguments[2]->s));
-}
-
-
-void hop(String ** arguments, int numOptions){
-    char first;
-    char * arg;
-    if (numOptions > 1 && strEqual(arguments[1]->s, "-h")){
-        printLiteral("hop <string> <speed>: makes given string hop across screen\nat speed 1(slow), 2(medium), or 3(fast).\n");
-        printLiteral("Press ESC to return to terminal.\n");
-        return;
-    }
-    if (numOptions == 1) hopAround("Hello, World!", 2);
-    if (numOptions == 2){
-        arg = arguments[1]->s;
-        first = arg[0];
-        if (first >= '0' && first <= '9') hopAround("Hello, World!", atoi(arg));
-        else hopAround(arg, 2);
-    }
-    if (numOptions > 2) hopAround(arguments[1]->s, atoi(arguments[2]->s));
-}
+// void hop(String ** arguments, int numOptions){
+//     char first;
+//     char * arg;
+//     if (numOptions > 1 && strEqual(arguments[1]->s, "-h")){
+//         printLiteral("hop <string> <speed>: makes given string hop across screen\nat speed 1(slow), 2(medium), or 3(fast).\n");
+//         printLiteral("Press ESC to return to terminal.\n");
+//         return;
+//     }
+//     if (numOptions == 1) hopAround("Hello, World!", 2);
+//     if (numOptions == 2){
+//         arg = arguments[1]->s;
+//         first = arg[0];
+//         if (first >= '0' && first <= '9') hopAround("Hello, World!", atoi(arg));
+//         else hopAround(arg, 2);
+//     }
+//     if (numOptions > 2) hopAround(arguments[1]->s, atoi(arguments[2]->s));
+// }
 
 
 void pwdCmd(String ** arguments, int numOptions){
@@ -296,17 +277,14 @@ void clear(String ** arguments, short numOptions){
 
 
 void help(String ** arguments, short numOptions){
-    printLiteral("Command options include:\n  help(duh)\n  color\n  bounce\n  hop\n  clear (Ctrl+L)\n  reset (Ctrl+R)\n");
+    printLiteral("Command options include:\n  help(duh)\n  color\n  clear (Ctrl+L)\n  reset (Ctrl+R)\n");
     printLiteral("  mkdir\n  rm\n  ls\n  cd\n  pwd\n  touch\n  typewriter/tw\n");
     printLiteral(" And any others you add!\n Add the -h flag to a command to learn more about it.\n");
 }
 
 
 void halt(){
-    pStr * halted = initStr("System halted", 11, 33, 0x0F);
-    halted->col = 40 - halted->length / 2;
     resetScreen();
-    putStr(halted);
     loop:
     asm("hlt");
     goto loop;

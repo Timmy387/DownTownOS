@@ -79,8 +79,6 @@ void commandHandler(String * fullStr){
     printChar('\n');
     if (!command);
     else if (strEqual(command->s, "typewriter") || strEqual(command->s, "tw")) typeWriterCmd(arguments, numOptions);
-    else if (strEqual(command->s, "bounce")) bounce(arguments, numOptions);
-    else if (strEqual(command->s, "hop")) hop(arguments, numOptions);
     else if (strEqual(command->s, "pwd")) pwdCmd(arguments, numOptions);
     else if (strEqual(command->s, "ls")) lsCmd(arguments, numOptions);
     else if (strEqual(command->s, "cd")) cdCmd(arguments, numOptions);
@@ -91,8 +89,8 @@ void commandHandler(String * fullStr){
     else if (strEqual(command->s, "color")) changeColor(arguments, numOptions);
     else if (strEqual(command->s, "clear")) clear(arguments, numOptions);
     else if (strEqual(command->s, "help")) help(arguments, numOptions);
-    else if (strEqual(command->s, "halt")) halt();
     else if (strEqual(command->s, "reset")) reset(arguments, numOptions);
+    else if (strEqual(command->s, "halt")) halt();
     else error(command);
 
     // prepare for next command

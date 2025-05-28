@@ -11,7 +11,6 @@ C_SRC = \
 			files/fileBackend.c 	\
 			files/fileCmds.c		\
             memory/malloc.c 		\
-			strings/pStr.c 			\
 			strings/string.c 		\
 			textEditor/openFile.c 	\
 			textEditor/typeWriter.c \
